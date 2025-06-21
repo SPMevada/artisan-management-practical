@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
+use Database\Seeders\AdminUserSeeder;
 
 return new class extends Migration
 {
@@ -15,8 +17,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone')->nullable();
+            $table->string('subject')->nullable();
+            $table->text('bio')->nullable();
+            $table->enum('role', ['teacher', 'admin'])->default('teacher');
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
@@ -35,6 +41,11 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Artisan::call('db:seed', [
+            '--class' => AdminUserSeeder::class,
+            '--force' => true,
+        ]);
     }
 
     /**
